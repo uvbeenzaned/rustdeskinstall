@@ -1,13 +1,5 @@
 #!/bin/bash
 
-# Assign a random value to the password variable
-rustdesk_pw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
-
-# Get your config string from your Web portal and Fill Below
-rustdesk_cfg="secure-string"
-
-################################### Please Do Not Edit Below This Line #########################################
-
 # Check if the script is being run as root
 if [[ $EUID -ne 0 ]]; then
     echo "This script must be run as root."
@@ -74,26 +66,3 @@ else
     # if they say no, exit the script
     exit 1
 fi
-
-# Run the rustdesk command with --get-id and store the output in the rustdesk_id variable
-rustdesk_id=$(rustdesk --get-id)
-
-# Apply new password to RustDesk
-rustdesk --password $rustdesk_pw &> /dev/null
-
-rustdesk --config $rustdesk_cfg
-
-systemctl restart rustdesk
-
-
-echo "..............................................."
-# Check if the rustdesk_id is not empty
-if [ -n "$rustdesk_id" ]; then
-	echo "RustDesk ID: $rustdesk_id"
-else
-	echo "Failed to get RustDesk ID."
-fi
-
-# Echo the value of the password variable
-echo "Password: $rustdesk_pw"
-echo "..............................................."
